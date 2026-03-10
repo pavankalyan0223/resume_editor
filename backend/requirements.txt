@@ -1,0 +1,7 @@
+# Minimal dependencies for Resume Builder backend
+# (ML/NLP models removed - skill extraction is heuristic-based)
+fastapi
+uvicorn[standard]
+PyMuPDF
+python-docx
+python-multipart

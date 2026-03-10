@@ -1,0 +1,34 @@
+.resume-card {
+  border-radius: 0.75rem;
+}
+
+.resume-scroll {
+  height: 100%;
+  overflow: auto;
+}
+
+/* Fixed page-like preview area for DOCX/PDF */
+.resume-preview-page {
+  /* Approximate A4 at screen resolution, plus ~2cm padding around */
+  width: 23cm;
+  height: 32cm;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resume-preview-page-inner {
+  width: 21cm; /* A4 width */
+  height: 29.7cm; /* A4 height */
+  background-color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+/* Ensure docx-preview content fits the inner page */
+.resume-preview-page-inner .docx-preview {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden;
+}
