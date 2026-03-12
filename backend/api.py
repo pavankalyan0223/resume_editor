@@ -86,6 +86,74 @@ async def upload_resume(file: UploadFile = File(...)) -> Dict[str, Any]:
     }
 
 
+def _filter_resume_by_sections(
+    resume_lines: List[Dict[str, Any]],
+    all_section_names: List[str],
+    selected_section_names: List[str],
+) -> List[Dict[str, Any]]:
+    """
+    Given flat resume_lines and:
+    - all_section_names: every possible section heading label from the UI
+    - selected_section_names: the subset the user checked
+
+    return only the lines that fall under the selected sections.
+
+    Simple heuristic:
+    - Treat a line as a section heading if its text starts with any section
+      name (case-insensitive, optional trailing ':' allowed).
+    - For each heading, take all lines from that heading up to (but not
+      including) the next heading.
+    - Keep segments only for the selected section names.
+    """
+    if not resume_lines or not all_section_names or not selected_section_names:
+        return resume_lines
+
+    lowered_all = [s.strip().lower() for s in all_section_names if s.strip()]
+    lowered_sel = {s.strip().lower() for s in selected_section_names if s.strip()}
+    if not lowered_all or not lowered_sel:
+        return resume_lines
+
+    # Find heading positions
+    headings: List[Dict[str, Any]] = []
+    for item in resume_lines:
+        text = str(item.get("line_text", "")).strip().lower()
+        for name in lowered_all:
+            # Accept exact start or with trailing colon
+            if text.startswith(name) or text.startswith(name + ":"):
+                headings.append(
+                    {
+                        "line_number": int(item.get("line_number", 0)),
+                        "name": name,
+                    }
+                )
+                break
+
+    if not headings:
+        # No headings detected; fall back to full resume.
+        return resume_lines
+
+    headings.sort(key=lambda h: h["line_number"])
+
+    # Build line_number -> item map for quick lookup
+    by_ln = {int(item.get("line_number", 0)): item for item in resume_lines}
+    max_ln = max(by_ln) if by_ln else 0
+
+    selected: List[Dict[str, Any]] = []
+    for idx, heading in enumerate(headings):
+        start_ln = heading["line_number"]
+        end_ln = headings[idx + 1]["line_number"] - 1 if idx + 1 < len(headings) else max_ln
+        # Always use all headings as boundaries, but only keep segments
+        # whose heading name was actually selected.
+        if heading["name"] not in lowered_sel:
+            continue
+        for ln in range(start_ln, end_ln + 1):
+            item = by_ln.get(ln)
+            if item is not None:
+                selected.append(item)
+
+    return selected or resume_lines
+
+
 @app.post("/api/job_skills")
 def job_skills(payload: Dict[str, Any] = Body(...)) -> Dict[str, Any]:
     """
@@ -117,9 +185,22 @@ def job_skills(payload: Dict[str, Any] = Body(...)) -> Dict[str, Any]:
         )
 
     resume_result = process_resume_file(src_path)
+    resume_lines: List[Dict[str, Any]] = list(resume_result.get("lines", []))
+
+    # Optional section filtering driven by the frontend.
+    sections_enabled = bool(payload.get("sections_enabled"))
+    # For backwards compatibility, `sections` alone means "selected only".
+    raw_all = payload.get("sections_all")
+    raw_sel = payload.get("sections_selected") or payload.get("sections") or []
+    if sections_enabled and isinstance(raw_sel, list):
+        all_names = raw_all if isinstance(raw_all, list) else raw_sel
+        all_str = [str(s) for s in all_names]
+        sel_str = [str(s) for s in raw_sel]
+        resume_lines = _filter_resume_by_sections(resume_lines, all_str, sel_str)
+
     resume_json = {
         "file_name": resume_result.get("file_name"),
-        "resume_lines": resume_result.get("lines", []),
+        "resume_lines": resume_lines,
     }
 
     # Read existing prompt.txt from the prompt folder but do NOT modify it.
@@ -187,6 +268,17 @@ def update_changes(body: ChangesUpdateBody) -> Dict[str, Any]:
 class ApplyAIChangesBody(BaseModel):  # type: ignore[name-defined]
     file_name: str
     changes_json: Dict[str, Any]
+
+
+class LineEditItem(BaseModel):  # type: ignore[name-defined]
+    line_number: int
+    text: str
+
+
+class ApplyLineEditsBody(BaseModel):  # type: ignore[name-defined]
+    base_file_name: str
+    updated_json_file_name: str | None = None
+    edits: List[LineEditItem]
 
 
 @app.post("/api/apply_ai_changes")
@@ -329,6 +421,76 @@ def apply_ai_changes(body: ApplyAIChangesBody) -> Dict[str, Any]:
     return {
         "ok": True,
         "changed_file_name": download_name,
+        "updated_json_file_name": updated_json_path.name,
+        "changed_lines": [
+            {
+                "line_number": int(c.get("line_number")),
+                "text": str(c.get("new_text", "")),
+            }
+            for c in normalized_changes
+            if c.get("action") == "modify" and isinstance(c.get("line_number"), int)
+        ],
+    }
+
+
+@app.post("/api/apply_line_edits")
+def apply_line_edits(body: ApplyLineEditsBody) -> Dict[str, Any]:
+    """
+    Apply simple line-by-line edits (modify actions only) to an existing DOCX,
+    then persist the updated DOCX (same filename) under result/ so the frontend
+    preview reloads.
+
+    This is used by the "text editor" UI after the AI change-set is applied.
+    """
+    base_file_name = body.base_file_name.strip()
+    if not base_file_name:
+        raise HTTPException(status_code=400, detail="base_file_name is required")
+
+    base_path = RESULT_DIR / base_file_name
+    if not base_path.exists():
+        base_path = UPLOAD_DIR / base_file_name
+        if not base_path.exists():
+            raise HTTPException(status_code=404, detail="Base file not found")
+
+    # Convert edits to the same "modify" format used elsewhere.
+    normalized_changes: List[Dict[str, Any]] = [
+        {"action": "modify", "line_number": e.line_number, "new_text": e.text}
+        for e in body.edits
+    ]
+
+    doc_bytes = apply_changes_in_memory(base_path, normalized_changes)
+
+    # Persist the updated DOCX into the result folder for preview/download.
+    RESULT_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = RESULT_DIR / base_file_name
+    with out_path.open("wb") as f:
+        f.write(doc_bytes)
+
+    # Best-effort update of the JSON representation if provided.
+    updated_json_file_name = (body.updated_json_file_name or "").strip()
+    if updated_json_file_name:
+        json_path = RESULT_DIR / updated_json_file_name
+        if json_path.exists():
+            try:
+                data = json.loads(json_path.read_text(encoding="utf-8"))
+                lines = list(data.get("resume_lines", []))
+                by_ln = {int(item.get("line_number")): item for item in lines if isinstance(item, dict)}
+                for e in body.edits:
+                    if e.line_number in by_ln:
+                        by_ln[e.line_number]["line_text"] = e.text
+                data["resume_lines"] = lines
+                json_path.write_text(
+                    json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+                )
+            except Exception:
+                # Don't block DOCX updates if JSON can't be updated.
+                pass
+
+    return {
+        "ok": True,
+        "changed_file_name": base_file_name,
+        "updated_json_file_name": updated_json_file_name or None,
+        "changed_lines": [{"line_number": e.line_number, "text": e.text} for e in body.edits],
     }
 
 

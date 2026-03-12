@@ -11,7 +11,7 @@
 .resume-preview-page {
   /* Approximate A4 at screen resolution, plus ~2cm padding around */
   width: 23cm;
-  height: 32cm;
+  min-height: 32cm;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -20,15 +20,57 @@
 
 .resume-preview-page-inner {
   width: 21cm; /* A4 width */
-  height: 29.7cm; /* A4 height */
+  min-height: 29.7cm; /* A4 height */
   background-color: #ffffff;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Ensure docx-preview content fits the inner page */
 .resume-preview-page-inner .docx-preview {
   width: 100% !important;
-  height: 100% !important;
-  overflow: hidden;
+  height: auto !important;
+  overflow: visible;
+}
+
+/* Simple "text editor" list for changed lines */
+.editor {
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  background: var(--bs-body-bg);
+  overflow: auto;
+}
+
+.editor-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+.editor-line:last-child {
+  border-bottom: none;
+}
+
+.line-number {
+  width: 2.75rem;
+  flex: 0 0 2.75rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #6b7280;
+  user-select: none;
+}
+
+.editor-input {
+  width: 100%;
+  max-width: 100%;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.375rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  resize: none;
+  overflow-y: hidden;
 }

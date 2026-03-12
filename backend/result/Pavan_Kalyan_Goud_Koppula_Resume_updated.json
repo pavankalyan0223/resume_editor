@@ -1,0 +1,145 @@
+{
+  "file_name": "Pavan_Kalyan_Goud_Koppula_Resume.docx",
+  "resume_lines": [
+    {
+      "line_number": 1,
+      "line_text": "Pavan Kalyan Goud Koppula"
+    },
+    {
+      "line_number": 2,
+      "line_text": "Edison, NJ, 08817 | pavankalyangoudkoppula.us@gmail.com |+1 2017059260 | linkedin.com/in/pavankalyan23"
+    },
+    {
+      "line_number": 3,
+      "line_text": "WORK EXPERIENCE"
+    },
+    {
+      "line_number": 4,
+      "line_text": "Graduate Assistant, Montclair State University Montclair, NJ \t                      Aug 2024 – Dec 2025"
+    },
+    {
+      "line_number": 5,
+      "line_text": "Contributed to university-led AI research in sentiment analysis and social networks, resulting in a IEMTRONICS publication (Best Paper – Reviewers’ Choice Award)"
+    },
+    {
+      "line_number": 6,
+      "line_text": "Engineered a scalable and fully responsive React + TypeScript frontend system using modern JavaScript, HTML, and CSS standards, improving UI performance by 40% and reducing module development time by 25%."
+    },
+    {
+      "line_number": 7,
+      "line_text": "Mentored 100+ students in Java, web technologies, and full-stack development concepts including REST APIs, frontend frameworks, and backend application architecture. "
+    },
+    {
+      "line_number": 8,
+      "line_text": "Graduate Trainee, LTIMindtree – Odisha, India\t                       Sep 2023 – Dec 2023"
+    },
+    {
+      "line_number": 9,
+      "line_text": "Developed and optimized Java-based microservices using Spring Boot and REST APIs, accelerating deployment cycles by 20% and improving application scalability."
+    },
+    {
+      "line_number": 10,
+      "line_text": "Collaborated with senior developers on client projects, increasing team productivity by 15% through revised Agile workflows (Scrum)."
+    },
+    {
+      "line_number": 11,
+      "line_text": "Improved Java full-stack development workflows and resolved critical backend issues, reducing system bugs by 30% and enhancing application stability."
+    },
+    {
+      "line_number": 12,
+      "line_text": "Developer Assistant, Neonq Private Limited – Hyderabad, India\t                       Aug 2022 – Aug 2023"
+    },
+    {
+      "line_number": 13,
+      "line_text": "Developed Spring Boot based microservices and REST APIs, improving backend performance by 25% and resolving 40% of reported service-related bugs."
+    },
+    {
+      "line_number": 14,
+      "line_text": "Integrated Apache Kafka and implemented asynchronous processing to enable event-driven communication, improving scalability and reducing API response time by 22%."
+    },
+    {
+      "line_number": 15,
+      "line_text": "Optimized database performance by refactoring JPA/Hibernate queries and improving data interactions with MySQL and PostgreSQL across microservice services."
+    },
+    {
+      "line_number": 16,
+      "line_text": "Collaborated with QA engineers to document distributed system architecture and improve API reliability, reducing post-release defects by 15%."
+    },
+    {
+      "line_number": 17,
+      "line_text": "Java Full Stack Intern, Wipro Private Limited – Hyderabad, India\t                    March 2022 – July 2022"
+    },
+    {
+      "line_number": 18,
+      "line_text": "Developed Java full-stack applications using Spring Boot, REST APIs, and relational databases, integrating service discovery (Eureka) and API Gateway to support scalable microservice architecture."
+    },
+    {
+      "line_number": 19,
+      "line_text": "Built a capstone end-to-end application from design to deployment, improving workflow efficiency by 30% while collaborating with a team of 5+ developers and senior mentors."
+    },
+    {
+      "line_number": 20,
+      "line_text": "EDUCATION"
+    },
+    {
+      "line_number": 21,
+      "line_text": "Montclair State University\t                    Jan 2024 – Dec 2025"
+    },
+    {
+      "line_number": 22,
+      "line_text": "M.S. in Computer Science - GPA: 3.97/4.0"
+    },
+    {
+      "line_number": 23,
+      "line_text": "TECHNOLOGIES"
+    },
+    {
+      "line_number": 24,
+      "line_text": "Languages: Java, Python, JavaScript, TypeScript, SQL, HTML, CSS"
+    },
+    {
+      "line_number": 25,
+      "line_text": "Frameworks & Architecture: Spring Boot, Hibernate (JPA), React, Angular, Microservices, RESTful APIs"
+    },
+    {
+      "line_number": 26,
+      "line_text": "Databases & Distributed Systems: MySQL, PostgreSQL, Apache Kafka, Eureka (Service Discovery), API Gateway, Redis"
+    },
+    {
+      "line_number": 27,
+      "line_text": "Cloud & DevOps: AWS, Docker, Jenkins, Git, Maven, CI/CD"
+    },
+    {
+      "line_number": 28,
+      "line_text": "AI & Practices: LLM Applications, Semantic Search, Sentiment Analysis, Unit Testing, Agile (Scrum)"
+    },
+    {
+      "line_number": 29,
+      "line_text": "PROJECTS"
+    },
+    {
+      "line_number": 30,
+      "line_text": "NexusGraph STEM Intelligence System — AI Research Graph Builder & STEM Tutor"
+    },
+    {
+      "line_number": 31,
+      "line_text": "AI system generating research knowledge graphs and providing STEM reasoning using LLMs, semantic search, and PDF analysis."
+    },
+    {
+      "line_number": 32,
+      "line_text": "AI-Powered Human Detection Security System Using Raspberry Pi"
+    },
+    {
+      "line_number": 33,
+      "line_text": "Engineered a low-cost AI-powered security system using Raspberry Pi and Pi Camera to detect human presence in real-time, achieving 92% accuracy in detection. The system triggers alerts for unauthorized access."
+    },
+    {
+      "line_number": 34,
+      "line_text": "E-Commerce Platform"
+    },
+    {
+      "line_number": 35,
+      "line_text": "Created a full-stack e-commerce platform using AngularJS and Spring Boot, improving user interface responsiveness, and increasing transaction efficiency by 25%."
+    }
+  ]
+}

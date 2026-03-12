@@ -1,4 +1,4 @@
-function ResumeUpload({ selectedFile, onFileChange, darkMode, onToggleTheme, onUploadClick }) {
+function ResumeUpload({ selectedFile, onFileChange, onUploadClick }) {
   const handleInputChange = (event) => {
     const file = event.target.files?.[0] ?? null;
     onFileChange(file);
@@ -14,20 +14,6 @@ function ResumeUpload({ selectedFile, onFileChange, darkMode, onToggleTheme, onU
             changes.
           </p>
         </div>
-      </div>
-
-      <div className="form-check form-switch d-flex align-items-center justify-content-between">
-        <label className="form-check-label small me-2" htmlFor="theme-switch">
-          {darkMode ? 'Dark mode' : 'Light mode'}
-        </label>
-        <input
-          className="form-check-input"
-          type="checkbox"
-          role="switch"
-          id="theme-switch"
-          checked={darkMode}
-          onChange={onToggleTheme}
-        />
       </div>
 
       <div className="border border-dashed rounded p-3 bg-light-subtle">

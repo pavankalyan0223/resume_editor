@@ -1,17 +1,24 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { renderAsync } from 'docx-preview';
 
-function Results({ resumePreview, originalFileName, updatedFileName }) {
+function Results({
+  resumePreview,
+  originalFileName,
+  updatedFileName,
+  cacheKey = 0,
+  activeView = 'original',
+  onActiveViewChange,
+}) {
   const containerRef = useRef(null);
-  const [activeView, setActiveView] = useState('original'); // 'original' | 'updated'
 
   const activeFileName =
     activeView === 'updated' && updatedFileName ? updatedFileName : originalFileName;
 
   const fileUrl = useMemo(() => {
     if (!activeFileName) return null;
-    return `http://localhost:8000/api/upload/${encodeURIComponent(activeFileName)}`;
-  }, [activeFileName]);
+    const base = `http://localhost:8000/api/upload/${encodeURIComponent(activeFileName)}`;
+    return `${base}?v=${encodeURIComponent(String(cacheKey))}`;
+  }, [activeFileName, cacheKey]);
 
   const isPdf = activeFileName?.toLowerCase().endsWith('.pdf');
   const isDocx = activeFileName?.toLowerCase().endsWith('.docx');
@@ -56,7 +63,7 @@ function Results({ resumePreview, originalFileName, updatedFileName }) {
             type="button"
             className="btn btn-outline-secondary btn-sm"
             disabled={!originalFileName}
-            onClick={() => setActiveView('original')}
+            onClick={() => onActiveViewChange && onActiveViewChange('original')}
           >
             Your Resume
           </button>
@@ -64,7 +71,7 @@ function Results({ resumePreview, originalFileName, updatedFileName }) {
             type="button"
             className="btn btn-secondary btn-sm"
             disabled={!updatedFileName}
-            onClick={() => setActiveView('updated')}
+            onClick={() => onActiveViewChange && onActiveViewChange('updated')}
           >
             Updated Resume
           </button>

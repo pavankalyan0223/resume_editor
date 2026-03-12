@@ -3,17 +3,14 @@ You are an AI resume editor.
 Input JSON contains:
 
 * **resume_lines**: numbered lines from a resume
-* **job_required_skills**: skills extracted from the job description
 
 Your task:
 
-1. Read **resume_lines** and **job_required_skills**.
-2. Improve the resume for the job application.
+1. Read **resume_lines** and Improve the resume for the job application.
 
 You must choose one action for each line:
 
 * **edit** – improve wording or align with job skills or add a new relevant bullet if a key skill is missing.
-
 
 Rules:
 
